@@ -3,6 +3,7 @@ import argparse
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+import datetime
 
 from prompts import system_prompt
 from functions.call_function import available_functions, call_function
@@ -63,3 +64,29 @@ for i in range(MAX_ITERATIONS):
         break
 else:
     print(f"Reached maximum iterations ({MAX_ITERATIONS}). Stopping.")
+
+
+log_file = "agent_session_logs.md"
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+with open(log_file, "a", encoding="utf-8") as f:
+    f.write(f"\n# Session Log: {timestamp}\n")
+    f.write(f"**Initial Prompt:** {args.user_prompt}\n\n")
+    f.write("## Detailed Thought Process & Tool Usage:\n")
+    
+    # Loop through history to log thoughts and function calls
+    for msg in messages:
+        role = msg.role
+        for part in msg.parts:
+            # Log Model's thoughts or function calls
+            if hasattr(part, 'text') and part.text:
+                f.write(f"> **{role.capitalize()}**: {part.text}\n\n")
+            if hasattr(part, 'function_call') and part.function_call:
+                f.write(f"- **Tool Call**: `{part.function_call.name}` with args: `{part.function_call.args}`\n")
+            # Log the results of the tool calls
+            if hasattr(part, 'function_response') and part.function_response:
+                f.write(f"- **Tool Result**: ```{part.function_response.result}```\n\n")
+                
+    f.write("\n" + "="*40 + "\n")
+
+print(f"\n[Detailed history logged to {log_file}]")
