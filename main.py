@@ -66,6 +66,7 @@ else:
     print(f"Reached maximum iterations ({MAX_ITERATIONS}). Stopping.")
 
 
+
 log_file = "agent_session_logs.md"
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -74,18 +75,22 @@ with open(log_file, "a", encoding="utf-8") as f:
     f.write(f"**Initial Prompt:** {args.user_prompt}\n\n")
     f.write("## Detailed Thought Process & Tool Usage:\n")
     
-    # Loop through history to log thoughts and function calls
     for msg in messages:
         role = msg.role
         for part in msg.parts:
-            # Log Model's thoughts or function calls
+            # 1. Log Model's text thoughts
             if hasattr(part, 'text') and part.text:
                 f.write(f"> **{role.capitalize()}**: {part.text}\n\n")
+            
+            # 2. Log Tool Calls (The "Command")
             if hasattr(part, 'function_call') and part.function_call:
-                f.write(f"- **Tool Call**: `{part.function_call.name}` with args: `{part.function_call.args}`\n")
-            # Log the results of the tool calls
+                f.write(f"- 🛠️ **Tool Call**: `{part.function_call.name}` with args: `{part.function_call.args}`\n")
+            
+            # 3. Log Tool Responses (The "Output") - FIXED ATTRIBUTE HERE
             if hasattr(part, 'function_response') and part.function_response:
-                f.write(f"- **Tool Result**: ```{part.function_response.result}```\n\n")
+                # The SDK uses .response to store the tool's output
+                tool_output = getattr(part.function_response, 'response', 'No output')
+                f.write(f"- 📤 **Tool Result**: \n```json\n{tool_output}\n```\n\n")
                 
     f.write("\n" + "="*40 + "\n")
 
