@@ -9,6 +9,21 @@ An autonomous, multi-turn AI agent built with Python and the Google Gemini 2.0 F
 * **Toolbox Architecture**: Uses JSON Schema declarations via `types.FunctionDeclaration` to expose local Python functions to the LLM.
 * **Stateful Memory**: Manages a complex conversation history of `FunctionCalls` and `FunctionResponses`, enabling the agent to "remember" findings from previous steps.
 * **Security Sandboxing**: Prevents directory traversal attacks by normalizing paths and validating them against a permitted working directory.
+* **Auditability & Logging**: Automatically generates a persistent Markdown-formatted audit trail of every reasoning step and tool execution.
+
+
+## 📝 Agent Activity Logging
+
+The system features a built-in telemetry layer to ensure transparency in the agent's decision-making process. 
+
+After every execution, a detailed report is appended to:
+👉 **`agent_session_logs.md`**
+
+This log includes:
+* **Timestamps** for every session.
+* **Internal Reasoning**: The "thoughts" and planning phases of the LLM.
+* **Tool Call History**: Every file read, written, or command executed.
+* **Execution Results**: Raw outputs from the terminal, including error logs used for self-correction.
 
 ## Technical Stack
 
