@@ -12,12 +12,12 @@ An autonomous, multi-turn AI agent built with Python and the Google Gemini 2.0 F
 * **Auditability & Logging**: Automatically generates a persistent Markdown-formatted audit trail of every reasoning step and tool execution.
 
 
-## 📝 Agent Activity Logging
+## Agent Activity Logging
 
 The system features a built-in telemetry layer to ensure transparency in the agent's decision-making process. 
 
 After every execution, a detailed report is appended to:
-👉 **`agent_session_logs.md`**
+**`agent_session_logs.md`**
 
 This log includes:
 * **Timestamps** for every session.
